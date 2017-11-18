@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 
+include(../../config/cmake/cpp-requirements.cmake)
+
 project(bimo)
 
 file(GLOB_RECURSE bimo_source_files *.cpp *.h)
