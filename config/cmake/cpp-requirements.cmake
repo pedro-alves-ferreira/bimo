@@ -44,12 +44,12 @@ function(bimo_set_target_gcc_cpp_properties)
 endfunction()
 
 function(bimo_set_target_msvc_cpp_properties)
-    # Force to always compile with W4 WX
-    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX /permissive-)
     set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} /IGNORE:4221" PARENT_SCOPE)
 endfunction()
 
 function(bimo_set_cpp_properties)
+    bimo_clear_default_cpp_properties()
     if (MSVC_VERSION GREATER_EQUAL "1900")
         include(CheckCXXCompilerFlag)
         CHECK_CXX_COMPILER_FLAG("/std:c++17" _cpp_latest_flag_supported)
