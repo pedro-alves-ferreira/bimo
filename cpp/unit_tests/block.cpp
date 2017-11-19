@@ -1,6 +1,6 @@
 #include "pch.h"
 
-#include "bisect/bimo/memory/static_buffer.h"
+#include "bisect/bimo/memory/static_sbuffer.h"
 #include "catch.hpp"
 #include <functional>
 

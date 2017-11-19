@@ -8,7 +8,7 @@
       "inheritEnvironments": [ "msvc_x86" ],
       "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
       "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
-      "cmakeCommandArgs": "-DBICLA_BUILD_TESTS=1",
+      "cmakeCommandArgs": "-DBIMO_BUILD_TESTS=1",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": ""
     },
@@ -19,7 +19,7 @@
       "inheritEnvironments": [ "msvc_x86" ],
       "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
       "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
-      "cmakeCommandArgs": "-DBICLA_BUILD_TESTS=1",
+      "cmakeCommandArgs": "-DBIMO_BUILD_TESTS=1",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": ""
     },
@@ -30,7 +30,7 @@
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
       "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
-      "cmakeCommandArgs": "-DBICLA_BUILD_TESTS=1",
+      "cmakeCommandArgs": "-DBIMO_BUILD_TESTS=1",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": ""
     },
@@ -41,7 +41,7 @@
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
       "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
-      "cmakeCommandArgs": "-DBICLA_BUILD_TESTS=1",
+      "cmakeCommandArgs": "-DBIMO_BUILD_TESTS=1",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": ""
     },
@@ -60,7 +60,7 @@
       "remoteCopySourcesOutputVerbosity": "Normal",
       "remoteCopySourcesConcurrentCopies": "10",
       "remoteCopySourcesMethod": "sftp",
-      "cmakeCommandArgs": "-DBICLA_BUILD_TESTS=1",
+      "cmakeCommandArgs": "-DBIMO_BUILD_TESTS=1",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "linux-x64" ]
@@ -80,7 +80,7 @@
       "remoteCopySourcesOutputVerbosity": "Normal",
       "remoteCopySourcesConcurrentCopies": "10",
       "remoteCopySourcesMethod": "sftp",
-      "cmakeCommandArgs": "-DBICLA_BUILD_TESTS=1",
+      "cmakeCommandArgs": "-DBIMO_BUILD_TESTS=1",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "linux-x64" ]
