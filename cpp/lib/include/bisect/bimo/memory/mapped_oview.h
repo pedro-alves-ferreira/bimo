@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bisect/bimo/memory/oview.h"
+#include "bisect/bimo/idioms/enforce.h"
 
 //------------------------------------------------------------------------------
 
