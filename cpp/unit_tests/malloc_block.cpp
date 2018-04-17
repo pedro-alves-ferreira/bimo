@@ -14,7 +14,7 @@ SCENARIO("Blocks have valid iterators")
     {
         constexpr auto data = to_byte_array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-        auto b = make_sbuffer<malloc_sbuffer>(10);
+        auto b = sbuffer_ptr(new malloc_sbuffer(10, {}));
         REQUIRE(b);
 
         copy(data, gsl::make_span(b->begin(), b->size()));
@@ -51,7 +51,7 @@ SCENARIO("Blocks have valid iterators")
 
     GIVEN("a sbuffer with length 0")
     {
-        auto b = make_sbuffer<malloc_sbuffer>(0);
+        auto b = sbuffer_ptr(new malloc_sbuffer(0, {}));
 
         WHEN("we ckeck the iterators")
         {

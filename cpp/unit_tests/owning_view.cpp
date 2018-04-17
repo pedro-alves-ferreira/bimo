@@ -1,29 +1,23 @@
 #include "pch.h"
 
 #include "bisect/bimo/memory/malloc_sbuffer.h"
-#include "bisect/bimo/memory/malloc_sbuffer_factory.h"
 #include "bisect/bimo/memory/oview.h"
 #include "bisect/bimo/memory/memory.h"
-
+#include "sbuffer_mock.h"
+#include "counting_sbuffer_factory.h"
 #include "catch.hpp"
 
 #include <algorithm>
 using namespace bisect::bimo;
+using namespace bisect::bimo::test;
 
-//------------------------------------------------------------------------------
-class counting_sbuffer_factory : public malloc_sbuffer_factory
+namespace
 {
-    int counter_ = 0;
-
-public:
-    sbuffer_ptr get_buffer(size_t buffer_size) override
+    sbuffer_ptr make_malloc_sbuffer(size_t length)
     {
-        ++counter_;
-        return malloc_sbuffer_factory::get_buffer(buffer_size);
+        return sbuffer_ptr(new malloc_sbuffer(length, {}));
     }
-
-    int count() const { return counter_; }
-};
+}
 //------------------------------------------------------------------------------
 
 SCENARIO("A oview can have a null sbuffer")
@@ -43,7 +37,7 @@ SCENARIO("A oview can have a null sbuffer")
     }
 }
 
-SCENARIO("Slices have valid iterators")
+SCENARIO("oviews have valid iterators")
 {
     GIVEN("a default constructed oview")
     {
@@ -61,7 +55,7 @@ SCENARIO("Slices have valid iterators")
 
     GIVEN("an empty oview")
     {
-        auto s = oview(make_sbuffer<malloc_sbuffer>(1), 0, 0);
+        auto s = oview(make_malloc_sbuffer(1), 0, 0);
 
         WHEN("we ckeck the iterators' distance")
         {
@@ -77,7 +71,7 @@ SCENARIO("Slices have valid iterators")
     {
         constexpr auto data = to_byte_array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-        auto b = make_sbuffer<malloc_sbuffer>(10);
+        auto b = make_malloc_sbuffer(10);
         copy(data, gsl::make_span(b->begin(), b->size()));
 
         auto s = oview(std::move(b));
@@ -108,11 +102,11 @@ SCENARIO("Slices have valid iterators")
     }
 }
 
-SCENARIO("Slices have an implicit conversion operator to a span")
+SCENARIO("oviews have an implicit conversion operator to a span")
 {
     constexpr auto data = to_byte_array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-    auto b = make_sbuffer<malloc_sbuffer>(10);
+    auto b = make_malloc_sbuffer(10);
     copy(data, gsl::make_span(b->begin(), b->size()));
 
     GIVEN("a oview with some data")
@@ -131,36 +125,83 @@ SCENARIO("Slices have an implicit conversion operator to a span")
     }
 }
 
-SCENARIO("Slices can be split")
+SCENARIO("oviews can be moved")
+{
+    constexpr auto data = to_byte_array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+
+    counting_sbuffer_factory f;
+
+    {
+        auto b = f.get_buffer(10);
+        copy(data, gsl::make_span(b->begin(), b->size()));
+
+        GIVEN("a oview with some data")
+        {
+            auto origin = oview(std::move(b));
+
+            WHEN("we move it to another oview")
+            {
+                auto target = std::move(origin);
+
+                THEN("the moved to oview is correct")
+                {
+                    cbyte_span s1 = target;
+                    REQUIRE(s1.begin() != cbyte_span::iterator());
+                    REQUIRE(s1.end() != cbyte_span::iterator());
+                    REQUIRE(s1.size() == 10);
+                    const auto d1 = gsl::make_span(&data[0], 10);
+                    REQUIRE(equal(d1, s1));
+                }
+
+                THEN("the moved from oview is empty")
+                {
+                    cbyte_span s1 = origin;
+                    REQUIRE(s1.size() == 0);
+                    REQUIRE(s1.end() - s1.begin() == 0);
+                }
+            }
+        }
+    }
+}
+
+SCENARIO("oviews can be split")
 {
     GIVEN("a oview with some data")
     {
         constexpr auto data = to_byte_array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-        auto b = make_sbuffer<malloc_sbuffer>(10);
-        copy(data, gsl::make_span(b->begin(), b->size()));
+        auto deleted = false;
+        auto on_delete = [&]() { deleted = true; };
 
-        auto s = oview(std::move(b));
-
-        WHEN("we split it in the middle")
         {
-            auto[s1, s2] = split(std::move(s), 5);
-            THEN("get two correct oviews")
-            {
-                REQUIRE(s1.view().size() == 5);
-                REQUIRE(s2.view().size() == 5);
+            auto b = sbuffer_ptr(new test::sbuffer_mock(on_delete, 10));
 
-                const auto d1 = gsl::make_span(&data[0], 5);
-                const auto d2 = gsl::make_span(&data[5], 5);
-                REQUIRE(equal(d1, s1));
-                REQUIRE(equal(d2, s2));
+            copy(data, gsl::make_span(b->begin(), b->size()));
+
+            auto s = oview(std::move(b));
+
+            WHEN("we split it in the middle")
+            {
+                auto[s1, s2] = split(std::move(s), 5);
+                THEN("get two correct oviews")
+                {
+                    REQUIRE(s1.view().size() == 5);
+                    REQUIRE(s2.view().size() == 5);
+
+                    const auto d1 = gsl::make_span(&data[0], 5);
+                    const auto d2 = gsl::make_span(&data[5], 5);
+                    REQUIRE(equal(d1, s1));
+                    REQUIRE(equal(d2, s2));
+                }
             }
         }
+
+        REQUIRE(deleted);
     }
 
     GIVEN("an empty oview")
     {
-        auto s = oview(make_sbuffer<malloc_sbuffer>(1), 0, 0);
+        auto s = oview(make_malloc_sbuffer(1), 0, 0);
 
         WHEN("we split it at 0")
         {
@@ -174,41 +215,52 @@ SCENARIO("Slices can be split")
     }
 }
 
-SCENARIO("Slices can be merged")
+SCENARIO("oviews can be merged")
 {
     GIVEN("two oviews with some data")
     {
-        malloc_sbuffer_factory f;
+        auto deleted_count = 0;
+        auto on_delete = [&]() { ++deleted_count; };
 
-        constexpr auto data1 = to_byte_array(0, 1, 2, 3, 4);
-        auto b1 = make_sbuffer<malloc_sbuffer>(5);
-        copy(data1, as_span(*b1));
+        counting_sbuffer_factory f;
 
-        constexpr auto data2 = to_byte_array(5, 6, 7, 8, 9);
-        auto b2 = make_sbuffer<malloc_sbuffer>(5);
-        copy(data2, as_span(*b2));
-
-        auto s1 = oview(std::move(b1));
-        auto s2 = oview(std::move(b2));
-
-        WHEN("we merge them")
         {
-            auto s = merge(f, std::move(s1), std::move(s2));
-            THEN("we get a pair of oviews pointing to the correct data")
+            constexpr auto data1 = to_byte_array(0, 1, 2, 3, 4);
+            auto b1 = sbuffer_ptr(new test::sbuffer_mock(on_delete, 5));
+            copy(data1, as_span(*b1));
+
+            constexpr auto data2 = to_byte_array(5, 6, 7, 8, 9);
+            auto b2 = sbuffer_ptr(new test::sbuffer_mock(on_delete, 5));
+            copy(data2, as_span(*b2));
+
+            auto s1 = oview(std::move(b1));
+            auto s2 = oview(std::move(b2));
+
+            WHEN("we merge them")
             {
-                const auto sr1 = gsl::make_span(&s.view()[0], 5);
-                const auto sr2 = gsl::make_span(&s.view()[5], 5);
-                REQUIRE(equal(sr1, data1));
-                REQUIRE(equal(sr2, data2));
+                auto s = merge(f, std::move(s1), std::move(s2));
+                THEN("we get a pair of oviews pointing to the correct data")
+                {
+                    const auto sr1 = gsl::make_span(&s.view()[0], 5);
+                    const auto sr2 = gsl::make_span(&s.view()[5], 5);
+                    REQUIRE(equal(sr1, data1));
+                    REQUIRE(equal(sr2, data2));
+
+                    REQUIRE(f.created_count() == 1);
+                    REQUIRE(f.outstanding_count() == 1);
+                }
             }
         }
+
+        REQUIRE(deleted_count == 2);
+        REQUIRE(f.outstanding_count() == 0);
     }
 
     GIVEN("two adjacent oviews")
     {
         counting_sbuffer_factory f;
 
-        auto b = make_sbuffer<malloc_sbuffer>(10);
+        auto b = make_malloc_sbuffer(10);
         auto s1 = oview(b, 0, 5);
         auto s2 = oview(b, 5, 5);
 
@@ -220,7 +272,7 @@ SCENARIO("Slices can be merged")
             auto s = merge(f, std::move(s1), std::move(s2));
             THEN("we don't reallocate")
             {
-                REQUIRE(f.count() == 0);
+                REQUIRE(f.created_count() == 0);
 
                 REQUIRE(s.view().size() == 10);
 
@@ -228,14 +280,16 @@ SCENARIO("Slices can be merged")
                 REQUIRE(&s.view()[9] == s2_last);
             }
         }
+
+        REQUIRE(f.outstanding_count() == 0);
     }
 
     GIVEN("one empty and a non-empty oview")
     {
-        malloc_sbuffer_factory f;
+        counting_sbuffer_factory f;
 
         constexpr auto data = to_byte_array(0, 1, 2, 3, 4);
-        auto b = make_sbuffer<malloc_sbuffer>(5);
+        auto b = make_malloc_sbuffer(5);
         copy(data, as_span(*b));
 
         auto s1 = oview(b, 0, 0);
@@ -254,10 +308,10 @@ SCENARIO("Slices can be merged")
 
     GIVEN("one non-empty and a empty oview")
     {
-        malloc_sbuffer_factory f;
+        counting_sbuffer_factory f;
 
         constexpr auto data = to_byte_array(0, 1, 2, 3, 4);
-        auto b = make_sbuffer<malloc_sbuffer>(5);
+        auto b = make_malloc_sbuffer(5);
         copy(data, as_span(*b));
 
         auto s1 = oview(b, 0, 5);
@@ -276,10 +330,10 @@ SCENARIO("Slices can be merged")
 
     GIVEN("one default constructed and a non-empty oview")
     {
-        malloc_sbuffer_factory f;
+        counting_sbuffer_factory f;
 
         constexpr auto data = to_byte_array(0, 1, 2, 3, 4);
-        auto b = make_sbuffer<malloc_sbuffer>(5);
+        auto b = make_malloc_sbuffer(5);
         copy(data, as_span(*b));
 
         auto s1 = oview();
@@ -298,10 +352,10 @@ SCENARIO("Slices can be merged")
 
     GIVEN("one non-empty and a default constructed oview")
     {
-        malloc_sbuffer_factory f;
+        counting_sbuffer_factory f;
 
         constexpr auto data = to_byte_array(0, 1, 2, 3, 4);
-        auto b = make_sbuffer<malloc_sbuffer>(5);
+        auto b = make_malloc_sbuffer(5);
         copy(data, as_span(*b));
 
         auto s1 = oview(b, 0, 5);

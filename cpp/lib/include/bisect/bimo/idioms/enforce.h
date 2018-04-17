@@ -7,24 +7,20 @@
 
 namespace bisect::bimo::detail
 {
-    template<typename ExceptionType>
-    inline void do_throw(const char _condition[])
+    template<typename ExceptionType, typename MsgType>
+    inline void do_throw(MsgType error)
     {
-        throw ExceptionType(_condition);
+        throw ExceptionType(error);
     }
 }
 
-#define BIMO_ENFORCE(_condition, _exception_type, ...) \
+#define BIMO_ENFORCE(_condition, _exception_type, error_msg) \
     if(!(_condition)) \
     { \
-        bisect::bimo::detail::do_throw<_exception_type>(#_condition); \
+        bisect::bimo::detail::do_throw<_exception_type>(error_msg); \
     }
 
-#define BIMO_THROW(_exception_type, ...) \
-    bisect::bimo::detail::do_throw<_exception_type>("exception"); \
-
 //------------------------------------------------------------------------------
-
 
 #if defined(NDEBUG)
 #   define BIMO_ASSERT(_condition)

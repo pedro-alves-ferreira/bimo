@@ -29,6 +29,11 @@ namespace bisect::bimo
             return view_;
         }
 
+        const oview& data() const
+        {
+            return data_;
+        }
+
     private:
         oview data_;
         Lens view_;

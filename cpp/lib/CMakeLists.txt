@@ -5,7 +5,7 @@ include(../../config/cmake/cpp-requirements.cmake)
 project(bimo)
 
 file(GLOB_RECURSE bimo_source_files *.cpp *.h)
-add_library(bimo ${bimo_source_files})
+add_library(bimo STATIC ${bimo_source_files})
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${bimo_source_files})
 
 target_include_directories(bimo 

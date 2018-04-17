@@ -34,13 +34,13 @@ namespace
 //------------------------------------------------------------------------------
 #pragma region oview
 
-owning_view::owning_view(sbuffer_ptr data)
+owning_view::owning_view(sbuffer_ptr data) noexcept
     : data_(std::move(data)),
     view_(get_view(data_.get(), 0))
 {
 }
 
-owning_view::owning_view(sbuffer_ptr data, ptrdiff_t start_offset, ptrdiff_t valid_size)
+owning_view::owning_view(sbuffer_ptr data, ptrdiff_t start_offset, ptrdiff_t valid_size) noexcept
     : data_(std::move(data)),
     view_(get_view(data_.get(), start_offset, valid_size))
 {
@@ -49,13 +49,13 @@ owning_view::owning_view(sbuffer_ptr data, ptrdiff_t start_offset, ptrdiff_t val
     BIMO_ASSERT(data_ == false || start_offset + valid_size <= data_->size());
  }
 
-owning_view::owning_view(const owning_view& other)
+owning_view::owning_view(const owning_view& other) noexcept
 : data_(other.data_),
 view_(other.view_)
 {
 }
 
-owning_view& owning_view::operator=(const owning_view& other)
+owning_view& owning_view::operator=(const owning_view& other) noexcept
 {
     if(this == &other) return *this;
 
@@ -64,20 +64,36 @@ owning_view& owning_view::operator=(const owning_view& other)
     return *this;
 }
 
-owning_view::owning_view(owning_view&&) = default;
-owning_view& owning_view::operator=(owning_view&&) = default;
+owning_view::owning_view(owning_view&& other) noexcept
+    :data_(std::move(other.data_)),
+    view_(std::move(other.view_))
+{
+    assert(this != &other);
+    other.view_ = cbyte_span{}; // moving doesn't clear the other view
+}
 
-owning_view::operator const cbyte_span&() const
+owning_view& owning_view::operator=(owning_view&& other) noexcept
+{
+    assert(this != &other);
+
+    this->data_ = std::move(other.data_);
+    this->view_ = std::move(other.view_);
+    other.view_ = cbyte_span{}; // moving doesn't clear the other view
+
+    return *this;
+}
+
+owning_view::operator const cbyte_span&() const noexcept
 {
     return this->view();
 }
 
-const cbyte_span& owning_view::view() const
+const cbyte_span& owning_view::view() const noexcept
 {
     return view_;
 }
 
-owning_view::operator bool() const
+owning_view::operator bool() const noexcept
 {
     return !view_.empty();
 }
@@ -126,9 +142,13 @@ owning_view bimo::merge(sbuffer_factory& factory, owning_view&& first, owning_vi
 
 #pragma endregion merge
 
-std::tuple<owning_view, owning_view> bimo::split(owning_view&& source, ptrdiff_t split_offset)
+std::tuple<owning_view, owning_view> bimo::split(owning_view&& source, ptrdiff_t split_offset) noexcept
 {
-    BIMO_ENFORCE(split_offset <= size(source), std::runtime_error, "trying to split past the end");
+    if (split_offset >= size(source))
+    {
+        return { source, owning_view{} };
+    }
+
     BIMO_ASSERT(source.data_);
     const auto so = start_offset(source, *source.data_);
     owning_view left(source.data_, so, split_offset);

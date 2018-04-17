@@ -14,14 +14,14 @@ namespace bisect::bimo
         virtual ~shared_buffer() = default;
 
     public:
-        virtual byte* begin() = 0;
-        virtual byte* end() = 0;
-        virtual const byte* cbegin() const = 0;
-        virtual const byte* cend() const = 0;
-        virtual ptrdiff_t size() const = 0;
+        virtual byte* begin() noexcept = 0;
+        virtual byte* end() noexcept = 0;
+        virtual const byte* cbegin() const noexcept = 0;
+        virtual const byte* cend() const noexcept = 0;
+        virtual ptrdiff_t size() const noexcept = 0;
 
-        virtual void add_ref() = 0;
-        virtual void remove_ref() = 0;
+        virtual void add_ref() noexcept = 0;
+        virtual void remove_ref() noexcept = 0;
     };
 
     using sbuffer = shared_buffer;
@@ -29,32 +29,26 @@ namespace bisect::bimo
     class sbuffer_ptr
     {
     public:
-        sbuffer_ptr(sbuffer* buffer = nullptr);
-        sbuffer_ptr(sbuffer_ptr& other);
-        sbuffer_ptr(sbuffer_ptr&& other);
-        sbuffer_ptr& operator=(sbuffer_ptr& other);
-        sbuffer_ptr& operator=(sbuffer_ptr&& other);
+        sbuffer_ptr(sbuffer* buffer = nullptr) noexcept;
+        sbuffer_ptr(sbuffer_ptr& other) noexcept;
+        sbuffer_ptr(sbuffer_ptr&& other) noexcept;
+        sbuffer_ptr& operator=(sbuffer_ptr& other) noexcept;
+        sbuffer_ptr& operator=(sbuffer_ptr&& other) noexcept;
         ~sbuffer_ptr();
 
-        sbuffer* get();
-        const sbuffer* get() const;
+        sbuffer* get() noexcept;
+        const sbuffer* get() const noexcept;
 
-        operator bool() const;
-        sbuffer* operator->();
-        const sbuffer* operator->() const;
-        sbuffer& operator*();
-        const sbuffer& operator*() const;
+        operator bool() const noexcept;
+        sbuffer* operator->() noexcept;
+        const sbuffer* operator->() const noexcept;
+        sbuffer& operator*() noexcept;
+        const sbuffer& operator*() const noexcept;
 
     private:
         sbuffer* buffer_ = nullptr;
     };
 
-    template<class T>
-    sbuffer_ptr make_sbuffer(size_t size)
-    {
-        return new T(size);
-    }
-
-    byte_span as_span(sbuffer& b);
-    cbyte_span as_span(const sbuffer& b);
+    byte_span as_span(sbuffer& b) noexcept;
+    cbyte_span as_span(const sbuffer& b) noexcept;
 }

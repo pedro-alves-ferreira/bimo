@@ -50,7 +50,7 @@ endmacro()
 function(bimo_set_target_gcc_cpp_properties)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wshadow -Wnon-virtual-dtor
             -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wrestrict -Wnull-dereference
-            -Wold-style-cast -Wuseless-cast -Wdouble-promotion
+            -Wold-style-cast -Wno-useless-cast -Wdouble-promotion -Wno-unknown-pragmas
             -Wformat=2 -pedantic)
 endfunction()
 

@@ -12,25 +12,25 @@ namespace bisect::bimo
     {
     public:
         owning_view() = default;
-        explicit owning_view(sbuffer_ptr data);
-        owning_view(sbuffer_ptr data, ptrdiff_t start_offset, ptrdiff_t valid_size);
+        explicit owning_view(sbuffer_ptr data) noexcept;
+        owning_view(sbuffer_ptr data, ptrdiff_t start_offset, ptrdiff_t valid_size) noexcept;
 
-        owning_view(const owning_view&);
-        owning_view& operator=(const owning_view&);
+        owning_view(const owning_view&) noexcept;
+        owning_view& operator=(const owning_view&) noexcept;
 
-        owning_view(owning_view&&);
-        owning_view& operator=(owning_view&&);
+        owning_view(owning_view&&) noexcept;
+        owning_view& operator=(owning_view&&) noexcept;
 
-        const cbyte_span& view() const;
+        const cbyte_span& view() const noexcept;
 
-        operator const cbyte_span&() const;
-        operator bool() const;
+        operator const cbyte_span&() const noexcept;
+        operator bool() const noexcept;
 
     private:
         mutable sbuffer_ptr data_;
         cbyte_span view_;
 
-        friend std::tuple<owning_view, owning_view> split(owning_view&& source, ptrdiff_t split_offset);
+        friend std::tuple<owning_view, owning_view> split(owning_view&& source, ptrdiff_t split_offset) noexcept;
         friend owning_view merge(sbuffer_factory& factory, owning_view&& first, owning_view&& second);
     };
 
@@ -48,9 +48,6 @@ namespace bisect::bimo
     {
         return s.view().end();
     }
-
-    std::tuple<owning_view, owning_view> split(owning_view&& source, ptrdiff_t split_offset);
-    owning_view merge(sbuffer_factory& factory, owning_view&& first, owning_view&& second);
 
     using oview = owning_view;
 }

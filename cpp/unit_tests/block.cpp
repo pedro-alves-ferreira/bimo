@@ -7,27 +7,22 @@
 using namespace bisect::bimo;
 
 //------------------------------------------------------------------------------
-class sbuffer_mock : public sbuffer
+class simple_sbuffer : public sbuffer
 {
     int ref_count_ = 1;
-    std::function<void()> on_deleted_;
 
 public:
-    sbuffer_mock(std::function<void()> on_deleted = []() {})
-        : on_deleted_(on_deleted)
-    {
-    }
+    simple_sbuffer() = default;
+    ~simple_sbuffer() = default;
 
-    ~sbuffer_mock() { on_deleted_(); }
+    byte* begin() noexcept override { return nullptr; }
+    byte* end() noexcept override { return nullptr; }
+    const byte* cbegin() const noexcept override { return nullptr; }
+    const byte* cend() const noexcept override { return nullptr; }
+    ptrdiff_t size() const noexcept override { return 0; }
 
-    byte* begin() override { return nullptr; }
-    byte* end() override { return nullptr; }
-    const byte* cbegin() const override { return nullptr; }
-    const byte* cend() const override { return nullptr; }
-    ptrdiff_t size() const override { return 0; }
-
-    void add_ref() override { ++ref_count_; }
-    void remove_ref() override { --ref_count_; }
+    void add_ref() noexcept override { ++ref_count_; }
+    void remove_ref() noexcept override { --ref_count_; }
 
     int ref_count() const noexcept { return ref_count_; }
 };
@@ -64,7 +59,7 @@ SCENARIO("Null sbuffers")
 
 SCENARIO("Conversion to bool")
 {
-    auto b = std::make_unique<sbuffer_mock>();
+    auto b = std::make_unique<simple_sbuffer>();
 
     GIVEN("a sbuffer_ptr")
     {
@@ -92,7 +87,7 @@ SCENARIO("Conversion to bool")
 
 SCENARIO("Conversion to sbuffer")
 {
-    auto b = std::make_unique<sbuffer_mock>();
+    auto b = std::make_unique<simple_sbuffer>();
 
     GIVEN("a sbuffer_ptr")
     {
@@ -120,7 +115,7 @@ SCENARIO("Simple ref count")
 {
     GIVEN("a sbuffer")
     {
-        auto b = std::make_unique<sbuffer_mock>();
+        auto b = std::make_unique<simple_sbuffer>();
 
         WHEN("we pass it to a sbuffer_ptr")
         {
@@ -139,7 +134,7 @@ SCENARIO("Self assignment")
 {
     GIVEN("a sbuffer_ptr")
     {
-        auto b = std::make_unique<sbuffer_mock>();
+        auto b = std::make_unique<simple_sbuffer>();
 
         WHEN("we assign it to itself")
         {
@@ -167,7 +162,7 @@ SCENARIO("Self assignment")
 
     GIVEN("a sbuffer_ptr")
     {
-        auto b = std::make_unique<sbuffer_mock>();
+        auto b = std::make_unique<simple_sbuffer>();
 
         WHEN("we move assign it to itself")
         {
@@ -197,7 +192,7 @@ SCENARIO("Copy construction and assignment")
 {
     GIVEN("a sbuffer_ptr")
     {
-        auto b = std::make_unique<sbuffer_mock>();
+        auto b = std::make_unique<simple_sbuffer>();
 
         WHEN("we copy it to another sbuffer_ptr")
         {
@@ -231,7 +226,7 @@ SCENARIO("Copy construction and assignment")
 
     GIVEN("a sbuffer_ptr")
     {
-        auto b = std::make_unique<sbuffer_mock>();
+        auto b = std::make_unique<simple_sbuffer>();
 
         WHEN("we assign it to another sbuffer_ptr")
         {
@@ -270,7 +265,7 @@ SCENARIO("Move construction and assignment")
 {
     GIVEN("a sbuffer_ptr")
     {
-        auto b = std::make_unique<sbuffer_mock>();
+        auto b = std::make_unique<simple_sbuffer>();
 
         WHEN("we move it to another sbuffer_ptr")
         {
@@ -305,7 +300,7 @@ SCENARIO("Move construction and assignment")
 
     GIVEN("a sbuffer_ptr")
     {
-        auto b = std::make_unique<sbuffer_mock>();
+        auto b = std::make_unique<simple_sbuffer>();
 
         WHEN("we move it to another sbuffer_ptr")
         {
