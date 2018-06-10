@@ -8,10 +8,13 @@ using namespace bisect::bimo;
 
 malloc_sbuffer::malloc_sbuffer(size_t _size,
     buffer_recycler_wptr recycler)
-    : recycler_(recycler),
-    size_(_size)
+    : 
+#if defined(EBU_LIST_RECYCLE_SBUFFERS)
+    recycler_(recycler),
+#endif // defined(EBU_LIST_RECYCLE_SBUFFERS)
+    size_(_size),
+    base_(_size == 0 ? nullptr : reinterpret_cast<byte*>(::malloc(size_)))
 {
-    base_ = _size == 0 ? nullptr : reinterpret_cast<byte*>(::malloc(size_));
     telemetry::instance().on_direct_allocation(_size);
 }
 
@@ -52,21 +55,29 @@ void malloc_sbuffer::add_ref() noexcept
 
 void malloc_sbuffer::remove_ref() noexcept
 {
+
     BIMO_ASSERT(ref_count_ > 0);
 
     if (--ref_count_ == 0)
     {
-        ref_count_ = 1;
+#if defined(EBU_LIST_RECYCLE_SBUFFERS)
 
-        auto r = recycler_.lock();
+        auto recycler = recycler_.lock();
 
-        if (r)
+        if (recycler)
         {
-            r->recycle(this);
+            ref_count_ = 1;
+            recycler->recycle(this);
         }
         else
         {
             delete this;
         }
+
+#else // defined(EBU_LIST_RECYCLE_SBUFFERS)
+
+        delete this;
+
+#endif // defined(EBU_LIST_RECYCLE_SBUFFERS)
     }
 }

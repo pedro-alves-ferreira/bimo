@@ -9,11 +9,12 @@
 
 namespace bisect::bimo
 {
+    void sbuffer_deleter(malloc_sbuffer*);
+
     class malloc_sbuffer : public shared_buffer
     {
     public:
         explicit malloc_sbuffer(size_t _size, buffer_recycler_wptr recycler);
-        ~malloc_sbuffer();
 
         byte* begin() noexcept override;
         byte* end() noexcept override;
@@ -25,10 +26,21 @@ namespace bisect::bimo
         void remove_ref() noexcept override;
 
     private:
-        buffer_recycler_wptr recycler_;
-        std::atomic<int> ref_count_ = 1;
-        size_t size_ = 0;
-        byte* base_ = nullptr;
+        malloc_sbuffer(malloc_sbuffer&) = delete;
+        malloc_sbuffer& operator=(malloc_sbuffer&) = delete;
+        malloc_sbuffer(malloc_sbuffer&&) = delete;
+        malloc_sbuffer& operator=(malloc_sbuffer&&) = delete;
+        ~malloc_sbuffer();
+        
+        friend class buffer_recycler;
+
+#if defined(EBU_LIST_RECYCLE_SBUFFERS)
+        const buffer_recycler_wptr recycler_;
+#endif // defined(EBU_LIST_RECYCLE_SBUFFERS)
+
+        const size_t size_ = 0;
+        byte* const base_ = nullptr;
+        std::atomic_int ref_count_ = 1;
     };
 
     using malloc_sbuffer_uptr = std::unique_ptr<malloc_sbuffer>;
