@@ -5,8 +5,6 @@
 #include <mutex>
 using namespace bisect::bimo;
 
-//#define EBU_LIST_RECYCLE_SBUFFERS
-
 //------------------------------------------------------------------------------
 #if defined(EBU_LIST_RECYCLE_SBUFFERS)
 
@@ -69,7 +67,7 @@ struct malloc_sbuffer_factory::impl : public buffer_recycler
 public:
     void recycle(malloc_sbuffer* buffer) override
     {
-        delete buffer;
+        delete_sbuffer(buffer);
     }
 
     size_t align_size(size_t requested_size)

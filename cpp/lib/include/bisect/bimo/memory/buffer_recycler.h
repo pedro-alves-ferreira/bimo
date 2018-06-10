@@ -10,6 +10,9 @@ namespace bisect::bimo
 
     class buffer_recycler
     {
+    protected:
+        void delete_sbuffer(malloc_sbuffer* b);
+
     public:
         virtual ~buffer_recycler() = default;
 
