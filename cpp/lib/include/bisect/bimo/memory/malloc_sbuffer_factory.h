@@ -15,7 +15,7 @@ namespace bisect::bimo
     public:
         malloc_sbuffer_factory();
 
-        sbuffer_ptr get_buffer(size_t buffer_size) override;
+        sbuffer_ptr get_buffer(size_t buffer_size) final;
 
     private:
         struct impl;

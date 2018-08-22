@@ -16,14 +16,14 @@ namespace bisect::bimo
     public:
         explicit malloc_sbuffer(size_t _size, buffer_recycler_wptr recycler);
 
-        byte* begin() noexcept override;
-        byte* end() noexcept override;
-        const byte* cbegin() const noexcept override;
-        const byte* cend() const noexcept override;
-        ptrdiff_t size() const noexcept override;
+        byte* begin() noexcept final;
+        byte* end() noexcept final;
+        const byte* cbegin() const noexcept final;
+        const byte* cend() const noexcept final;
+        ptrdiff_t size() const noexcept final;
 
-        void add_ref() noexcept override;
-        void remove_ref() noexcept override;
+        void add_ref() noexcept final;
+        void remove_ref() noexcept final;
 
     private:
         malloc_sbuffer(malloc_sbuffer&) = delete;

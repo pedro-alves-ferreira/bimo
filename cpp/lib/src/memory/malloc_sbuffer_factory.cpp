@@ -1,6 +1,5 @@
 #include "bisect/bimo/memory/malloc_sbuffer_factory.h"
 #include "bisect/bimo/memory/malloc_sbuffer.h"
-#include "bisect/bimo/memory/telemetry.h"
 #include "bisect/bimo/memory/buffer_recycler.h"
 #include <mutex>
 using namespace bisect::bimo;
@@ -32,7 +31,6 @@ public:
             }
         }
 
-        telemetry::instance().on_allocation_through_factory(buffer_size);
         return sbuffer_ptr(new malloc_sbuffer(align_size(buffer_size), self));
     }
 
@@ -77,7 +75,6 @@ public:
 
     sbuffer_ptr get_buffer(size_t buffer_size, buffer_recycler_ptr self)
     {
-        telemetry::instance().on_allocation_through_factory(buffer_size);
         return sbuffer_ptr(new malloc_sbuffer(align_size(buffer_size), self));
     }
 };

@@ -1,5 +1,4 @@
 #include "bisect/bimo/memory/malloc_sbuffer.h"
-#include "bisect/bimo/memory/telemetry.h"
 #include "bisect/bimo/idioms/enforce.h"
 
 using namespace bisect::bimo;
@@ -15,7 +14,6 @@ malloc_sbuffer::malloc_sbuffer(size_t _size,
     size_(_size),
     base_(_size == 0 ? nullptr : reinterpret_cast<byte*>(::malloc(size_)))
 {
-    telemetry::instance().on_direct_allocation(_size);
 }
 
 malloc_sbuffer::~malloc_sbuffer()
