@@ -15,6 +15,8 @@ namespace bisect::bimo::test
         sbuffer_ptr get_buffer(size_t buffer_size) override;
 
         int created_count() const;
+
+		// This is only valid if buffers are recycled
         int outstanding_count() const;
 
     private:

@@ -14,6 +14,9 @@ malloc_sbuffer::malloc_sbuffer(size_t _size,
     size_(_size),
     base_(_size == 0 ? nullptr : reinterpret_cast<byte*>(::malloc(size_)))
 {
+#if !defined(EBU_LIST_RECYCLE_SBUFFERS)
+	(void)recycler;
+#endif // !defined(EBU_LIST_RECYCLE_SBUFFERS)
 }
 
 malloc_sbuffer::~malloc_sbuffer()

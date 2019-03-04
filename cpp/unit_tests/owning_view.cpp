@@ -253,7 +253,6 @@ SCENARIO("oviews can be merged")
         }
 
         REQUIRE(deleted_count == 2);
-        REQUIRE(f.outstanding_count() == 0);
     }
 
     GIVEN("two adjacent oviews")

@@ -7,6 +7,11 @@
 
 namespace bisect::bimo
 {
+    class owning_view;
+    
+    std::tuple<owning_view, owning_view> split(owning_view&& source, ptrdiff_t split_offset) noexcept;
+    owning_view merge(sbuffer_factory& factory, owning_view&& first, owning_view&& second);
+
     // Based on ACE
     class owning_view
     {

@@ -58,7 +58,7 @@ private:
     std::unordered_multimap<size_t, std::unique_ptr<malloc_sbuffer>> cache_;
 };
 
-#else defined(EBU_LIST_RECYCLE_SBUFFERS)
+#else // defined(EBU_LIST_RECYCLE_SBUFFERS)
 
 struct malloc_sbuffer_factory::impl : public buffer_recycler
 {
