@@ -22,6 +22,17 @@ if (BIMO_BUILD_PIC AND NOT WIN32)
 	target_compile_options(bimo PRIVATE -fPIC)
 endif ()
 
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    target_compile_options(bimo PRIVATE 
+        /W4 /WX /std:c++17 /permissive-
+    )
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    target_compile_options(bimo PRIVATE 
+        -Werror
+    )
+endif()
+
+
 target_link_libraries(bimo GSL)
 
 bimo_set_target_cpp_properties()

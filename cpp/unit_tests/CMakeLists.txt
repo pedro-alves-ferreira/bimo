@@ -27,9 +27,8 @@ set_target_properties(bimo_unit_tests PROPERTIES
     CXX_EXTENSIONS NO
     )
 
-target_compile_options(bimo_unit_tests PRIVATE 
-    /W4 /WX /std:c++17 /permissive-
-)
-
-enable_testing()
-ParseAndAddCatchTests(${PROJECT_NAME})
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+    target_compile_options(bimo_unit_tests PRIVATE 
+        /W4 /WX /std:c++17 /permissive-
+    )
+endif()

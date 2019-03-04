@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.9)
 
 project(bimo)
 
+option(BIMO_BUILD_TESTS "If true, build the unit tests" OFF)
+option(BIMO_BUILD_PIC "If true, build with -fPIC in GCC" OFF)
+
 # -------------------------------------------------------------------------
 # conan
 
@@ -40,4 +43,5 @@ add_subdirectory(cpp/lib)
 if(BIMO_BUILD_TESTS)
     enable_testing ()
 	add_subdirectory(cpp/unit_tests)
+    ParseAndAddCatchTests(bimo_unit_tests)
 endif()
