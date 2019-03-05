@@ -22,12 +22,16 @@ endmacro()
 
 macro(bimo_clear_default_msvc_cpp_properties)
     # Force to always compile with W4
-    if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-        string(REGEX REPLACE "/W[0-4] " "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    set(LOCAL_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    if(LOCAL_CMAKE_CXX_FLAGS MATCHES "/WX- ")
+        string(REGEX REPLACE "/WX-" LOCAL_CMAKE_CXX_FLAGS "${LOCAL_CMAKE_CXX_FLAGS}")
     endif()
-    if(CMAKE_CXX_FLAGS MATCHES "/WX- ")
-        string(REGEX REPLACE "/WX-" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    if(LOCAL_CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+        string(REGEX REPLACE "/W[0-4] " "" LOCAL_CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     endif()
+
+    set(LOCAL_CMAKE_CXX_FLAGS "${LOCAL_CMAKE_CXX_FLAGS}" PARENT_SCOPE)
+    set(CMAKE_CXX_FLAGS "${LOCAL_CMAKE_CXX_FLAGS}" PARENT_SCOPE)
 endmacro()
 
 macro(bimo_set_target_cpp_properties)
