@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.9)
 project(bimo)
 
 option(BIMO_BUILD_TESTS "If true, build the unit tests" OFF)
-option(BIMO_BUILD_PIC "If true, build with -fPIC in GCC" OFF)
 
 # -------------------------------------------------------------------------
 # conan
