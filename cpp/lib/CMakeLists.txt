@@ -5,13 +5,7 @@ include(../../config/cmake/cpp-requirements.cmake)
 project(bimo)
 
 file(GLOB_RECURSE bimo_source_files *.cpp *.h)
-
-if (UNIX)
-add_library(bimo SHARED ${bimo_source_files})
-else (UNIX)
 add_library(bimo STATIC ${bimo_source_files})
-endif (UNIX)
-
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${bimo_source_files})
 
 target_include_directories(bimo
@@ -23,8 +17,9 @@ target_include_directories(bimo
     src
     )
 
-if (UNIX)
-    set_property(TARGET bimo PROPERTY POSITION_INDEPENDENT_CODE ON)
+
+if (BIMO_BUILD_PIC AND NOT WIN32)
+	target_compile_options(bimo PRIVATE -fPIC)
 endif ()
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
