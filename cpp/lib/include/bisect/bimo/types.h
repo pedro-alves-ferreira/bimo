@@ -38,4 +38,9 @@ namespace bisect::bimo
     constexpr details::return_type<D, Types...> make_array(Types&&... t) {
         return { std::forward<Types>(t)... };
     }
+
+    template <typename T> constexpr ptrdiff_t ssizeof()
+    {
+        return static_cast<ptrdiff_t>(sizeof(T));
+    }
 }

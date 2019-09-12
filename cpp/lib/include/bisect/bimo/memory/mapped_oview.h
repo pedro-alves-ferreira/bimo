@@ -14,7 +14,7 @@ namespace bisect::bimo
         explicit mapped_oview(oview&& data)
             : data_(std::move(data))
         {
-            BIMO_ASSERT(size(data_) >= sizeof(MappedStruct));
+            BIMO_ASSERT(size(data_) >= ssizeof<MappedStruct>());
         }
 
         const MappedStruct& value() const
