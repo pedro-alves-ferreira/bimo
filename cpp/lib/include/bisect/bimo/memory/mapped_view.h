@@ -16,7 +16,7 @@ namespace bisect::bimo
             : data_(std::move(data)),
             view_(*reinterpret_cast<const Mapping*>(data_.view().data()), args...)
         {
-            BIMO_ASSERT(size(data_) >= sizeof(Mapping));
+            BIMO_ASSERT(size(data_) >= ssizeof<Mapping>());
         }
 
         const Lens& view() const
