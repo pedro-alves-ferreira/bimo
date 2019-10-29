@@ -2,7 +2,7 @@
 
 #include "bisect/bimo/memory/malloc_sbuffer.h"
 #include "bisect/bimo/memory/memory.h"
-#include "catch.hpp"
+#include "catch2/catch.hpp"
 
 using namespace bisect::bimo;
 

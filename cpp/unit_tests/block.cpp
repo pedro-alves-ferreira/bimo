@@ -1,7 +1,7 @@
 #include "pch.h"
 
 #include "bisect/bimo/memory/static_sbuffer.h"
-#include "catch.hpp"
+#include "catch2/catch.hpp"
 #include <functional>
 
 using namespace bisect::bimo;

@@ -5,7 +5,7 @@
 #include "bisect/bimo/memory/memory.h"
 #include "sbuffer_mock.h"
 #include "counting_sbuffer_factory.h"
-#include "catch.hpp"
+#include "catch2/catch.hpp"
 
 #include <algorithm>
 using namespace bisect::bimo;
