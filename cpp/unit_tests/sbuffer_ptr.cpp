@@ -1,11 +1,11 @@
 #include "pch.h"
 
 #include "bisect/bimo/memory/malloc_sbuffer.h"
-#include "bisect/bimo/memory/shared_buffer.h"
 #include "bisect/bimo/memory/memory.h"
-#include "sbuffer_mock.h"
-#include "counting_sbuffer_factory.h"
+#include "bisect/bimo/memory/shared_buffer.h"
 #include "catch2/catch.hpp"
+#include "counting_sbuffer_factory.h"
+#include "sbuffer_mock.h"
 
 #include <algorithm>
 using namespace bisect::bimo;
@@ -22,7 +22,7 @@ SCENARIO("sbuffer_ptrs can be copy assigned")
             THEN("the buffer must have been released")
             {
                 auto deleted_count = 0;
-                auto on_delete = [&]() { ++deleted_count; };
+                auto on_delete     = [&]() { ++deleted_count; };
 
                 counting_sbuffer_factory f;
 
@@ -30,7 +30,6 @@ SCENARIO("sbuffer_ptrs can be copy assigned")
                     auto b = sbuffer_ptr(new test::sbuffer_mock(on_delete, 5));
 
                     auto c = sbuffer_ptr(new test::sbuffer_mock(on_delete, 5));
-
 
                     b = c;
                 }
@@ -51,7 +50,7 @@ SCENARIO("sbuffer_ptrs can be move assigned")
             THEN("the buffer must have been released")
             {
                 auto deleted_count = 0;
-                auto on_delete = [&]() { ++deleted_count; };
+                auto on_delete     = [&]() { ++deleted_count; };
 
                 counting_sbuffer_factory f;
 

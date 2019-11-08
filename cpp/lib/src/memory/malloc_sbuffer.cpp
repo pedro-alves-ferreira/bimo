@@ -5,17 +5,15 @@ using namespace bisect::bimo;
 
 //------------------------------------------------------------------------------
 
-malloc_sbuffer::malloc_sbuffer(size_t _size,
-    buffer_recycler_wptr recycler)
-    : 
+malloc_sbuffer::malloc_sbuffer(size_t _size, buffer_recycler_wptr recycler)
+    :
 #if defined(EBU_LIST_RECYCLE_SBUFFERS)
-    recycler_(recycler),
+      recycler_(recycler),
 #endif // defined(EBU_LIST_RECYCLE_SBUFFERS)
-    size_(_size),
-    base_(_size == 0 ? nullptr : reinterpret_cast<byte*>(::malloc(size_)))
+      size_(_size), base_(_size == 0 ? nullptr : reinterpret_cast<byte*>(::malloc(size_)))
 {
 #if !defined(EBU_LIST_RECYCLE_SBUFFERS)
-	(void)recycler;
+    (void)recycler;
 #endif // !defined(EBU_LIST_RECYCLE_SBUFFERS)
 }
 
@@ -59,13 +57,13 @@ void malloc_sbuffer::remove_ref() noexcept
 
     BIMO_ASSERT(ref_count_ > 0);
 
-    if (--ref_count_ == 0)
+    if(--ref_count_ == 0)
     {
 #if defined(EBU_LIST_RECYCLE_SBUFFERS)
 
         auto recycler = recycler_.lock();
 
-        if (recycler)
+        if(recycler)
         {
             ref_count_ = 1;
             recycler->recycle(this);

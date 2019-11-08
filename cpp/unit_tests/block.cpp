@@ -11,8 +11,8 @@ class simple_sbuffer : public sbuffer
 {
     int ref_count_ = 1;
 
-public:
-    simple_sbuffer() = default;
+  public:
+    simple_sbuffer()  = default;
     ~simple_sbuffer() = default;
 
     byte* begin() noexcept override { return nullptr; }
@@ -37,10 +37,7 @@ SCENARIO("Null sbuffers")
         {
             sbuffer_ptr bp(nullptr);
 
-            THEN("the accessor return nullptr")
-            {
-                REQUIRE(bp.get() == nullptr);
-            }
+            THEN("the accessor return nullptr") { REQUIRE(bp.get() == nullptr); }
         }
     }
     GIVEN("a sbuffer_ptr")
@@ -49,10 +46,7 @@ SCENARIO("Null sbuffers")
         {
             sbuffer_ptr bp;
 
-            THEN("the accessor return nullptr")
-            {
-                REQUIRE(bp.get() == nullptr);
-            }
+            THEN("the accessor return nullptr") { REQUIRE(bp.get() == nullptr); }
         }
     }
 }
@@ -67,20 +61,14 @@ SCENARIO("Conversion to bool")
 
         WHEN("we it is not empty")
         {
-            THEN("it converts to true")
-            {
-                REQUIRE(bp == true);
-            }
+            THEN("it converts to true") { REQUIRE(bp == true); }
         }
 
         WHEN("we it is empty")
         {
             bp = sbuffer_ptr();
 
-            THEN("it converts to false")
-            {
-                REQUIRE(bp == false);
-            }
+            THEN("it converts to false") { REQUIRE(bp == false); }
         }
     }
 }
@@ -95,18 +83,12 @@ SCENARIO("Conversion to sbuffer")
 
         WHEN("we use operator ->")
         {
-            THEN("it converts to sbuffer")
-            {
-                REQUIRE(bp.operator->() == b.get());
-            }
+            THEN("it converts to sbuffer") { REQUIRE(bp.operator->() == b.get()); }
         }
 
         WHEN("we use operator *")
         {
-            THEN("it converts to sbuffer")
-            {
-                REQUIRE(&bp.operator*() == b.get());
-            }
+            THEN("it converts to sbuffer") { REQUIRE(&bp.operator*() == b.get()); }
         }
     }
 }
@@ -127,7 +109,6 @@ SCENARIO("Simple ref count")
             REQUIRE(b->ref_count() == 0);
         }
     }
-
 }
 
 SCENARIO("Self assignment")
@@ -143,20 +124,11 @@ SCENARIO("Self assignment")
                 sbuffer_ptr bp1(b.get());
 
                 bp1 = bp1;
-                THEN("it still points to the same sbuffer")
-                {
-                    REQUIRE(bp1.get() == b.get());
-                }
-                THEN("it does not increment the sbuffer's reference count")
-                {
-                    REQUIRE(b->ref_count() == 1);
-                }
+                THEN("it still points to the same sbuffer") { REQUIRE(bp1.get() == b.get()); }
+                THEN("it does not increment the sbuffer's reference count") { REQUIRE(b->ref_count() == 1); }
             }
 
-            THEN("it decrements the reference count upon destruction")
-            {
-                REQUIRE(b->ref_count() == 0);
-            }
+            THEN("it decrements the reference count upon destruction") { REQUIRE(b->ref_count() == 0); }
         }
     }
 
@@ -170,20 +142,11 @@ SCENARIO("Self assignment")
                 sbuffer_ptr bp1(b.get());
 
                 bp1 = std::move(bp1);
-                THEN("it still points to the same sbuffer")
-                {
-                    REQUIRE(bp1.get() == b.get());
-                }
-                THEN("it does not increment the sbuffer's reference count")
-                {
-                    REQUIRE(b->ref_count() == 1);
-                }
+                THEN("it still points to the same sbuffer") { REQUIRE(bp1.get() == b.get()); }
+                THEN("it does not increment the sbuffer's reference count") { REQUIRE(b->ref_count() == 1); }
             }
 
-            THEN("it decrements the reference count upon destruction")
-            {
-                REQUIRE(b->ref_count() == 0);
-            }
+            THEN("it decrements the reference count upon destruction") { REQUIRE(b->ref_count() == 0); }
         }
     }
 }
@@ -201,14 +164,8 @@ SCENARIO("Copy construction and assignment")
 
                 {
                     sbuffer_ptr bp2(bp1);
-                    THEN("both point to the same sbuffer")
-                    {
-                        REQUIRE(bp1.get() == bp2.get());
-                    }
-                    THEN("it increments the sbuffer's reference count")
-                    {
-                        REQUIRE(b->ref_count() == 2);
-                    }
+                    THEN("both point to the same sbuffer") { REQUIRE(bp1.get() == bp2.get()); }
+                    THEN("it increments the sbuffer's reference count") { REQUIRE(b->ref_count() == 2); }
                 }
 
                 THEN("the second one, decrements the reference count upon destruction")
@@ -217,10 +174,7 @@ SCENARIO("Copy construction and assignment")
                 }
             }
 
-            THEN("the first one, decrements the reference count upon destruction")
-            {
-                REQUIRE(b->ref_count() == 0);
-            }
+            THEN("the first one, decrements the reference count upon destruction") { REQUIRE(b->ref_count() == 0); }
         }
     }
 
@@ -237,14 +191,8 @@ SCENARIO("Copy construction and assignment")
                     sbuffer_ptr bp2;
                     bp2 = bp1;
 
-                    THEN("both point to the same sbuffer")
-                    {
-                        REQUIRE(bp1.get() == bp2.get());
-                    }
-                    THEN("it increments the sbuffer's reference count")
-                    {
-                        REQUIRE(b->ref_count() == 2);
-                    }
+                    THEN("both point to the same sbuffer") { REQUIRE(bp1.get() == bp2.get()); }
+                    THEN("it increments the sbuffer's reference count") { REQUIRE(b->ref_count() == 2); }
                 }
 
                 THEN("the second one, decrements the reference count upon destruction")
@@ -253,10 +201,7 @@ SCENARIO("Copy construction and assignment")
                 }
             }
 
-            THEN("the first one, decrements the reference count upon destruction")
-            {
-                REQUIRE(b->ref_count() == 0);
-            }
+            THEN("the first one, decrements the reference count upon destruction") { REQUIRE(b->ref_count() == 0); }
         }
     }
 }
@@ -275,14 +220,8 @@ SCENARIO("Move construction and assignment")
                 {
                     sbuffer_ptr bp2(std::move(bp1));
 
-                    THEN("the new one points to the same sbuffer")
-                    {
-                        REQUIRE(bp2.get() == b.get());
-                    }
-                    THEN("the old one points to nullptr")
-                    {
-                        REQUIRE(bp1.get() == nullptr);
-                    }
+                    THEN("the new one points to the same sbuffer") { REQUIRE(bp2.get() == b.get()); }
+                    THEN("the old one points to nullptr") { REQUIRE(bp1.get() == nullptr); }
                 }
 
                 THEN("the second one, decrements the reference count upon destruction")
@@ -311,14 +250,8 @@ SCENARIO("Move construction and assignment")
                     sbuffer_ptr bp2;
                     bp2 = std::move(bp1);
 
-                    THEN("the new one points to the same sbuffer")
-                    {
-                        REQUIRE(bp2.get() == b.get());
-                    }
-                    THEN("the old one points to nullptr")
-                    {
-                        REQUIRE(bp1.get() == nullptr);
-                    }
+                    THEN("the new one points to the same sbuffer") { REQUIRE(bp2.get() == b.get()); }
+                    THEN("the old one points to nullptr") { REQUIRE(bp1.get() == nullptr); }
                 }
 
                 THEN("the second one, decrements the reference count upon destruction")

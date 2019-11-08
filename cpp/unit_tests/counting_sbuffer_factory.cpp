@@ -1,7 +1,7 @@
 #include "pch.h"
 
-#include "counting_sbuffer_factory.h"
 #include "bisect/bimo/memory/malloc_sbuffer.h"
+#include "counting_sbuffer_factory.h"
 
 using namespace bisect::bimo;
 using namespace bisect::bimo::test;
@@ -18,9 +18,11 @@ namespace bisect::bimo::test
 
         void recycle(malloc_sbuffer*) override;
     };
-}
+} // namespace bisect::bimo::test
 
-callback_delegate::callback_delegate(std::function<void()> _on_recycle) : on_recycle(_on_recycle) {}
+callback_delegate::callback_delegate(std::function<void()> _on_recycle) : on_recycle(_on_recycle)
+{
+}
 
 void callback_delegate::recycle(malloc_sbuffer*)
 {
@@ -37,7 +39,7 @@ counting_sbuffer_factory::counting_sbuffer_factory()
 sbuffer_ptr counting_sbuffer_factory::get_buffer(size_t buffer_size)
 {
     ++create_counter_;
-    return { new malloc_sbuffer(buffer_size, callback_) };
+    return {new malloc_sbuffer(buffer_size, callback_)};
 }
 
 int counting_sbuffer_factory::created_count() const

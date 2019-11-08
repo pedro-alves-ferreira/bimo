@@ -21,36 +21,34 @@ sbuffer_ptr::sbuffer_ptr(sbuffer* buffer) noexcept : buffer_(buffer)
 {
 }
 
-sbuffer_ptr::sbuffer_ptr(sbuffer_ptr& other) noexcept
-    : buffer_(other.buffer_)
+sbuffer_ptr::sbuffer_ptr(sbuffer_ptr& other) noexcept : buffer_(other.buffer_)
 {
-    if (&other == this) return;
+    if(&other == this) return;
 
-    if (this->buffer_)
+    if(this->buffer_)
     {
         this->buffer_->add_ref();
     }
 }
 
-sbuffer_ptr::sbuffer_ptr(sbuffer_ptr&& other) noexcept
-    : buffer_(other.buffer_)
-{ 
+sbuffer_ptr::sbuffer_ptr(sbuffer_ptr&& other) noexcept : buffer_(other.buffer_)
+{
     BIMO_ASSERT(&other != this);
     other.buffer_ = nullptr;
 }
 
 sbuffer_ptr& sbuffer_ptr::operator=(sbuffer_ptr& other) noexcept
-{ 
-    if (&other == this) return *this;
+{
+    if(&other == this) return *this;
 
-    if (buffer_)
+    if(buffer_)
     {
         buffer_->remove_ref();
     }
 
     this->buffer_ = other.buffer_;
 
-    if (buffer_)
+    if(buffer_)
     {
         buffer_->add_ref();
     }
@@ -59,10 +57,10 @@ sbuffer_ptr& sbuffer_ptr::operator=(sbuffer_ptr& other) noexcept
 }
 
 sbuffer_ptr& sbuffer_ptr::operator=(sbuffer_ptr&& other) noexcept
-{ 
-    if (&other == this) return *this;
+{
+    if(&other == this) return *this;
 
-    if (buffer_)
+    if(buffer_)
     {
         buffer_->remove_ref();
     }
@@ -75,12 +73,12 @@ sbuffer_ptr& sbuffer_ptr::operator=(sbuffer_ptr&& other) noexcept
 
 sbuffer_ptr::~sbuffer_ptr()
 {
-    if (buffer_ == nullptr) return;
+    if(buffer_ == nullptr) return;
     buffer_->remove_ref();
 }
 
 sbuffer* sbuffer_ptr::get() noexcept
-{ 
+{
     return buffer_;
 }
 
@@ -95,21 +93,21 @@ sbuffer_ptr::operator bool() const noexcept
 }
 
 sbuffer* sbuffer_ptr::operator->() noexcept
-{ 
+{
     return buffer_;
 }
 
 const sbuffer* sbuffer_ptr::operator->() const noexcept
-{ 
+{
     return buffer_;
 }
 
 sbuffer& sbuffer_ptr::operator*() noexcept
-{ 
+{
     return *buffer_;
 }
 
 const sbuffer& sbuffer_ptr::operator*() const noexcept
-{ 
+{
     return *buffer_;
 }

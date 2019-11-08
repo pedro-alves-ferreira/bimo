@@ -1,6 +1,6 @@
 #include "bisect/bimo/memory/malloc_sbuffer_factory.h"
-#include "bisect/bimo/memory/malloc_sbuffer.h"
 #include "bisect/bimo/memory/buffer_recycler.h"
+#include "bisect/bimo/memory/malloc_sbuffer.h"
 #include <mutex>
 using namespace bisect::bimo;
 
@@ -14,14 +14,14 @@ namespace
 
 struct malloc_sbuffer_factory::impl : public buffer_recycler
 {
-public:
+  public:
     sbuffer_ptr get_buffer(ptrdiff_t buffer_size, buffer_recycler_ptr self)
     {
         {
             std::unique_lock<std::mutex> lock(m_);
 
             const auto it = cache_.lower_bound(buffer_size);
-            if (it != cache_.end() && it->second->size() >= buffer_size)
+            if(it != cache_.end() && it->second->size() >= buffer_size)
             {
                 assert(it->second->size() >= buffer_size);
                 auto to_return = std::move(it->second);
@@ -34,19 +34,19 @@ public:
         return sbuffer_ptr(new malloc_sbuffer(align_size(buffer_size), self));
     }
 
-private:
+  private:
     void recycle(malloc_sbuffer* buffer) override
     {
         std::unique_lock<std::mutex> lock(m_);
-        cache_.insert({ buffer->size(), std::unique_ptr<malloc_sbuffer>(buffer) });
+        cache_.insert({buffer->size(), std::unique_ptr<malloc_sbuffer>(buffer)});
     }
 
     size_t align_size(size_t requested_size)
     {
         const auto remainder = requested_size % alignment_size;
-        const auto count = requested_size / alignment_size;
+        const auto count     = requested_size / alignment_size;
 
-        if (remainder == 0)
+        if(remainder == 0)
         {
             return requested_size;
         }
@@ -62,16 +62,10 @@ private:
 
 struct malloc_sbuffer_factory::impl : public buffer_recycler
 {
-public:
-    void recycle(malloc_sbuffer* buffer) override
-    {
-        delete_sbuffer(buffer);
-    }
+  public:
+    void recycle(malloc_sbuffer* buffer) override { delete_sbuffer(buffer); }
 
-    size_t align_size(size_t requested_size)
-    {
-        return requested_size;
-    }
+    size_t align_size(size_t requested_size) { return requested_size; }
 
     sbuffer_ptr get_buffer(size_t buffer_size, buffer_recycler_ptr self)
     {
@@ -83,8 +77,7 @@ public:
 
 //------------------------------------------------------------------------------
 
-malloc_sbuffer_factory::malloc_sbuffer_factory()
-    : impl_(std::make_shared<impl>())
+malloc_sbuffer_factory::malloc_sbuffer_factory() : impl_(std::make_shared<impl>())
 {
 }
 
@@ -92,4 +85,3 @@ sbuffer_ptr malloc_sbuffer_factory::get_buffer(size_t buffer_size)
 {
     return impl_->get_buffer(buffer_size, impl_);
 }
-

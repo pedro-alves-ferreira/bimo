@@ -6,8 +6,9 @@ namespace bisect::bimo::test
 {
     class sbuffer_mock : public sbuffer
     {
-    public:
-        sbuffer_mock(std::function<void()> on_deleted = []() {}, ptrdiff_t size = 0);
+      public:
+        sbuffer_mock(
+            std::function<void()> on_deleted = []() {}, ptrdiff_t size = 0);
 
         byte* begin() noexcept override;
         byte* end() noexcept override;
@@ -20,12 +21,12 @@ namespace bisect::bimo::test
 
         int ref_count() const noexcept;
 
-    private:
+      private:
         ~sbuffer_mock();
 
-        byte * const data_ = nullptr;
-        byte* const end_ = nullptr;
-        int ref_count_ = 1;
+        byte* const data_ = nullptr;
+        byte* const end_  = nullptr;
+        int ref_count_    = 1;
         std::function<void()> on_deleted_;
     };
-}
+} // namespace bisect::bimo::test

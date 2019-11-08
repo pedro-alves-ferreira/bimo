@@ -1,11 +1,11 @@
 #include "pch.h"
 
 #include "bisect/bimo/memory/malloc_sbuffer.h"
-#include "bisect/bimo/memory/oview.h"
 #include "bisect/bimo/memory/memory.h"
-#include "sbuffer_mock.h"
-#include "counting_sbuffer_factory.h"
+#include "bisect/bimo/memory/oview.h"
 #include "catch2/catch.hpp"
+#include "counting_sbuffer_factory.h"
+#include "sbuffer_mock.h"
 
 #include <algorithm>
 using namespace bisect::bimo;
@@ -13,11 +13,8 @@ using namespace bisect::bimo::test;
 
 namespace
 {
-    sbuffer_ptr make_malloc_sbuffer(size_t length)
-    {
-        return sbuffer_ptr(new malloc_sbuffer(length, {}));
-    }
-}
+    sbuffer_ptr make_malloc_sbuffer(size_t length) { return sbuffer_ptr(new malloc_sbuffer(length, {})); }
+} // namespace
 //------------------------------------------------------------------------------
 
 SCENARIO("A oview can have a null sbuffer")
@@ -89,7 +86,7 @@ SCENARIO("oviews have valid iterators")
         {
             THEN("they are correct")
             {
-                auto span = s.view();
+                auto span     = s.view();
                 const auto bg = *span.begin();
                 REQUIRE(bg == byte(0));
                 auto end = span.end();
@@ -170,7 +167,7 @@ SCENARIO("oviews can be split")
     {
         constexpr auto data = to_byte_array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-        auto deleted = false;
+        auto deleted   = false;
         auto on_delete = [&]() { deleted = true; };
 
         {
@@ -182,7 +179,7 @@ SCENARIO("oviews can be split")
 
             WHEN("we split it in the middle")
             {
-                auto[s1, s2] = split(std::move(s), 5);
+                auto [s1, s2] = split(std::move(s), 5);
                 THEN("get two correct oviews")
                 {
                     REQUIRE(s1.view().size() == 5);
@@ -205,7 +202,7 @@ SCENARIO("oviews can be split")
 
         WHEN("we split it at 0")
         {
-            auto[s1, s2] = split(std::move(s), 0);
+            auto [s1, s2] = split(std::move(s), 0);
             THEN("get two empty oviews")
             {
                 REQUIRE(s1.view().size() == 0);
@@ -220,17 +217,17 @@ SCENARIO("oviews can be merged")
     GIVEN("two oviews with some data")
     {
         auto deleted_count = 0;
-        auto on_delete = [&]() { ++deleted_count; };
+        auto on_delete     = [&]() { ++deleted_count; };
 
         counting_sbuffer_factory f;
 
         {
             constexpr auto data1 = to_byte_array(0, 1, 2, 3, 4);
-            auto b1 = sbuffer_ptr(new test::sbuffer_mock(on_delete, 5));
+            auto b1              = sbuffer_ptr(new test::sbuffer_mock(on_delete, 5));
             copy(data1, as_span(*b1));
 
             constexpr auto data2 = to_byte_array(5, 6, 7, 8, 9);
-            auto b2 = sbuffer_ptr(new test::sbuffer_mock(on_delete, 5));
+            auto b2              = sbuffer_ptr(new test::sbuffer_mock(on_delete, 5));
             copy(data2, as_span(*b2));
 
             auto s1 = oview(std::move(b1));
@@ -259,12 +256,12 @@ SCENARIO("oviews can be merged")
     {
         counting_sbuffer_factory f;
 
-        auto b = make_malloc_sbuffer(10);
+        auto b  = make_malloc_sbuffer(10);
         auto s1 = oview(b, 0, 5);
         auto s2 = oview(b, 5, 5);
 
         const auto s1_begin = &s1.view()[0];
-        const auto s2_last = &s2.view()[4];
+        const auto s2_last  = &s2.view()[4];
 
         WHEN("we merge them")
         {
@@ -288,7 +285,7 @@ SCENARIO("oviews can be merged")
         counting_sbuffer_factory f;
 
         constexpr auto data = to_byte_array(0, 1, 2, 3, 4);
-        auto b = make_malloc_sbuffer(5);
+        auto b              = make_malloc_sbuffer(5);
         copy(data, as_span(*b));
 
         auto s1 = oview(b, 0, 0);
@@ -310,7 +307,7 @@ SCENARIO("oviews can be merged")
         counting_sbuffer_factory f;
 
         constexpr auto data = to_byte_array(0, 1, 2, 3, 4);
-        auto b = make_malloc_sbuffer(5);
+        auto b              = make_malloc_sbuffer(5);
         copy(data, as_span(*b));
 
         auto s1 = oview(b, 0, 5);
@@ -332,7 +329,7 @@ SCENARIO("oviews can be merged")
         counting_sbuffer_factory f;
 
         constexpr auto data = to_byte_array(0, 1, 2, 3, 4);
-        auto b = make_malloc_sbuffer(5);
+        auto b              = make_malloc_sbuffer(5);
         copy(data, as_span(*b));
 
         auto s1 = oview();
@@ -354,7 +351,7 @@ SCENARIO("oviews can be merged")
         counting_sbuffer_factory f;
 
         constexpr auto data = to_byte_array(0, 1, 2, 3, 4);
-        auto b = make_malloc_sbuffer(5);
+        auto b              = make_malloc_sbuffer(5);
         copy(data, as_span(*b));
 
         auto s1 = oview(b, 0, 5);

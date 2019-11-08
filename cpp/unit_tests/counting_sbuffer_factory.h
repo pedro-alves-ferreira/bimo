@@ -1,7 +1,7 @@
 #pragma once
 
-#include "bisect/bimo/memory/shared_buffer.h"
 #include "bisect/bimo/memory/sbuffer_factory.h"
+#include "bisect/bimo/memory/shared_buffer.h"
 
 namespace bisect::bimo::test
 {
@@ -9,20 +9,20 @@ namespace bisect::bimo::test
 
     class counting_sbuffer_factory : public sbuffer_factory
     {
-    public:
+      public:
         counting_sbuffer_factory();
 
         sbuffer_ptr get_buffer(size_t buffer_size) override;
 
         int created_count() const;
 
-		// This is only valid if buffers are recycled
+        // This is only valid if buffers are recycled
         int outstanding_count() const;
 
-    private:
+      private:
         void on_recycle();
-        int create_counter_ = 0;
+        int create_counter_   = 0;
         int recycled_counter_ = 0;
         std::shared_ptr<callback_delegate> callback_;
     };
-}
+} // namespace bisect::bimo::test

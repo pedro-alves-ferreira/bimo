@@ -10,15 +10,15 @@ namespace bisect::bimo
 
     class buffer_recycler
     {
-    protected:
+      protected:
         void delete_sbuffer(malloc_sbuffer* b);
 
-    public:
+      public:
         virtual ~buffer_recycler() = default;
 
         virtual void recycle(malloc_sbuffer* buffer) = 0;
     };
 
-    using buffer_recycler_ptr = std::shared_ptr<buffer_recycler>;
+    using buffer_recycler_ptr  = std::shared_ptr<buffer_recycler>;
     using buffer_recycler_wptr = std::weak_ptr<buffer_recycler>;
-}
+} // namespace bisect::bimo

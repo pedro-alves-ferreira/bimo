@@ -6,10 +6,9 @@
 
 namespace bisect::bimo
 {
-    template<int N>
-    class static_sbuffer : public sbuffer
+    template <int N> class static_sbuffer : public sbuffer
     {
-    public:
+      public:
         static_sbuffer(std::array<byte, N> data) : data_(data) {}
 
         byte* begin() noexcept override { return data_.data(); }
@@ -21,13 +20,12 @@ namespace bisect::bimo
         void add_ref() noexcept override {}
         void remove_ref() noexcept override {}
 
-    private:
+      private:
         std::array<byte, N> data_;
     };
 
-    template<size_t N>
-    sbuffer_ptr make_static_sbuffer(std::array<byte, N> data)
+    template <size_t N> sbuffer_ptr make_static_sbuffer(std::array<byte, N> data)
     {
         return new static_sbuffer<N>(data);
     }
-}
+} // namespace bisect::bimo

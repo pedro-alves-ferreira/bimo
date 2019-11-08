@@ -30,10 +30,7 @@ SCENARIO("Blocks have valid iterators")
 
         WHEN("we ckeck the iterators' span")
         {
-            THEN("it is correct")
-            {
-                REQUIRE(b->end() - b->begin() == ptrdiff_t(10));
-            }
+            THEN("it is correct") { REQUIRE(b->end() - b->begin() == ptrdiff_t(10)); }
         }
 
         WHEN("we ckeck the values")
@@ -64,18 +61,12 @@ SCENARIO("Blocks have valid iterators")
 
         WHEN("we ckeck begin and end")
         {
-            THEN("they are equal")
-            {
-                REQUIRE(b->begin() == b->end());
-            }
+            THEN("they are equal") { REQUIRE(b->begin() == b->end()); }
         }
 
         WHEN("we ckeck size")
         {
-            THEN("it is 0")
-            {
-                REQUIRE(b->size() == 0);
-            }
+            THEN("it is 0") { REQUIRE(b->size() == 0); }
         }
     }
 }
