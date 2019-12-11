@@ -70,9 +70,7 @@ function(bimo_set_target_gcc_cpp_properties)
             -Wdouble-promotion -Wno-unknown-pragmas
             -Wformat=2 -pedantic)
 
-    if (NOT ${NO_WARNINGS_AS_ERRORS})
-        target_compile_options(${PROJECT_NAME} PRIVATE -Werror)
-    endif ()
+    target_compile_options(${PROJECT_NAME} PRIVATE -Werror)
 
     set(MY_CXX_OPTIONS -Wnon-virtual-dtor -Wold-style-cast -Wno-useless-cast)
     target_compile_options(${PROJECT_NAME} PRIVATE "$<$<COMPILE_LANGUAGE:CXX>:${MY_CXX_OPTIONS}>")
