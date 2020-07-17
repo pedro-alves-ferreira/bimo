@@ -29,6 +29,7 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 add_library(GSL INTERFACE)
 target_include_directories(GSL INTERFACE "third-party/GSL/include")
 
+add_subdirectory(third-party/SimpleAmqpClient)
 # -------------------------------------------------------------------------
 # library
 

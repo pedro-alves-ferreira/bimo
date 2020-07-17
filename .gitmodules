@@ -1,3 +1,6 @@
 [submodule "third-party/GSL"]
 	path = third-party/GSL
 	url = https://github.com/Microsoft/GSL.git
+[submodule "third-party/SimpleAmqpClient"]
+	path = third-party/SimpleAmqpClient
+	url = https://github.com/bisect-pt/SimpleAmqpClient.git

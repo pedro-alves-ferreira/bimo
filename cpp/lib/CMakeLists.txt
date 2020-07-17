@@ -33,6 +33,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 endif ()
 
 
-target_link_libraries(bimo GSL)
+target_link_libraries(bimo GSL
+        CONAN_PKG::jsonformoderncpp
+        SimpleAmqpClient
+        )
 
 bimo_set_target_cpp_properties()
