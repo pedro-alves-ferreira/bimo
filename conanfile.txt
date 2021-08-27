@@ -1,6 +1,6 @@
 [requires]
-Catch2/2.10.2@catchorg/stable
+catch2/2.13.7
 rabbitmq-c/0.8.0@bisect/stable
-jsonformoderncpp/3.7.0@vthiery/stable
+nlohmann_json/3.10.2
 [generators]
 cmake
