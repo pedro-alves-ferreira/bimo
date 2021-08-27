@@ -34,7 +34,7 @@ endif ()
 
 
 target_link_libraries(bimo GSL
-        CONAN_PKG::jsonformoderncpp
+        CONAN_PKG::nlohmann_json
         SimpleAmqpClient
         )
 
